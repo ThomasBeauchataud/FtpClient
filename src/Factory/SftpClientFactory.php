@@ -31,7 +31,7 @@ class SftpClientFactory implements FtpClientFactoryInterface
     /**
      * @param array $defaultConfig
      */
-    public function __construct(array $defaultConfig)
+    public function __construct(array $defaultConfig = [])
     {
         $this->optionsResolver = $this->buildOptionsResolver($defaultConfig);
     }
@@ -62,8 +62,10 @@ class SftpClientFactory implements FtpClientFactoryInterface
             ->setAllowedTypes('credentials', ['string', 'array'])
             ->setRequired('port')
             ->setAllowedTypes('port', 'integer')
+            ->setDefault('port', 22)
             ->setRequired('keepAlive')
-            ->setAllowedTypes('keepAlive', 'boolean');
+            ->setAllowedTypes('keepAlive', 'boolean')
+            ->setDefault('keepAlive', true);
 
         foreach ($defaultConfig as $key => $value) {
             if ($optionsResolver->isDefined($key)) {

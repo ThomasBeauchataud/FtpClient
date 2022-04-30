@@ -1,16 +1,21 @@
 {
     "name": "tbcd/ftp-client",
     "type": "library",
-    "description": "FTP client library",
+    "description": "Create ftp clients services to be able to manage multiple ftp connection with a common abstraction for all protocols (FTP, SFTP, SCP)",
     "authors": [
         {
             "name": "Thomas Beauchataud"
         }
     ],
     "license": "MIT",
+    "keywords": [
+        "ftp",
+        "sftp",
+        "scp"
+    ],
     "minimum-stability": "stable",
     "prefer-stable": true,
-    "version": "1.0.0",
+    "version": "1.0",
     "require": {
         "php": ">=8.0.2",
         "ext-ctype": "*",

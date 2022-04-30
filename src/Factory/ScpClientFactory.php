@@ -14,13 +14,13 @@ namespace TBCD\FtpClient\Factory;
 
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use TBCD\FtpClient\FtpClient;
+use TBCD\FtpClient\ScpClient;
 
 /**
  * @author Thomas Beauchataud
  * @since 27/04/2022
  */
-class FtpClientFactory implements FtpClientFactoryInterface
+class ScpClientFactory implements FtpClientFactoryInterface
 {
 
     /**
@@ -39,12 +39,12 @@ class FtpClientFactory implements FtpClientFactoryInterface
 
     /**
      * @param array $clientConfig
-     * @return FtpClient
+     * @return ScpClient
      */
-    public function createClient(array $clientConfig): FtpClient
+    public function createClient(array $clientConfig): ScpClient
     {
         $clientConfig = $this->optionsResolver->resolve($clientConfig);
-        return new FtpClient($clientConfig['host'], $clientConfig['user'], $clientConfig['password'], $clientConfig['port'], $clientConfig['passive'], $clientConfig['keepAlive']);
+        return new ScpClient($clientConfig['host'], $clientConfig['user'], $clientConfig['credentials'], $clientConfig['port'], $clientConfig['keepAlive']);
     }
 
     /**
@@ -58,17 +58,14 @@ class FtpClientFactory implements FtpClientFactoryInterface
             ->setAllowedTypes('host', 'string')
             ->setRequired('user')
             ->setAllowedTypes('user', 'string')
-            ->setRequired('password')
-            ->setAllowedTypes('password', 'string')
+            ->setRequired('credentials')
+            ->setAllowedTypes('credentials', ['string', 'array'])
             ->setRequired('port')
             ->setAllowedTypes('port', 'integer')
-            ->setRequired('port')
-            ->setDefault('port', 21)
-            ->setAllowedTypes('passive', 'boolean')
-            ->setDefault('passive', true)
+            ->setDefault('port', 22)
             ->setRequired('keepAlive')
             ->setAllowedTypes('keepAlive', 'boolean')
-            ->setDefault('passive', true);
+            ->setDefault('keepAlive', true);
 
         foreach ($defaultConfig as $key => $value) {
             if ($optionsResolver->isDefined($key)) {
