@@ -12,6 +12,7 @@
 
 namespace TBCD\FtpClient\Factory;
 
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use TBCD\FtpClient\FtpClientInterface;
 
 /**
@@ -26,5 +27,11 @@ interface FtpClientFactoryInterface
      * @return FtpClientInterface
      */
     public function createClient(array $clientConfig): FtpClientInterface;
+
+    /**
+     * @param array $defaultConfig
+     * @return OptionsResolver
+     */
+    public static function buildOptionsResolver(array $defaultConfig): OptionsResolver;
 
 }

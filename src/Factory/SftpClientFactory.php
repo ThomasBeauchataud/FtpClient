@@ -33,7 +33,7 @@ class SftpClientFactory implements FtpClientFactoryInterface
      */
     public function __construct(array $defaultConfig = [])
     {
-        $this->optionsResolver = $this->buildOptionsResolver($defaultConfig);
+        $this->optionsResolver = self::buildOptionsResolver($defaultConfig);
     }
 
 
@@ -51,7 +51,7 @@ class SftpClientFactory implements FtpClientFactoryInterface
      * @param array $defaultConfig
      * @return OptionsResolver
      */
-    private function buildOptionsResolver(array $defaultConfig): OptionsResolver
+    public static function buildOptionsResolver(array $defaultConfig): OptionsResolver
     {
         $optionsResolver = (new OptionsResolver)
             ->setRequired('host')
