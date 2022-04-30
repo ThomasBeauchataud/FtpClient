@@ -28,12 +28,12 @@ $ftpClient2 = $this->ftpClientFactory->createClient($config);
 Below are the different clients/factories for the different protocols :
 - FTP
 ```
-$ftpClient = (new FtpClientFactory)->createClient(...);
+$ftpClient = (new FtpClientFactory())->createClient(...);
 $ftpClient = new FtpClient(...);
 ```
 - SFTP
 ```
-$sftpClient = (new SftpClientFactory)->createClient(...);
+$sftpClient = (new SftpClientFactory())->createClient(...);
 $sftpClient = new SftpClient(...);
 ```
 >You can use both password or public key for credentials
@@ -41,7 +41,7 @@ $sftpClient = new SftpClient(...);
 > - ```new SftpClient('localhost', 'root', ['publicKey' => 'your-key', 'privateKey' => 'your-key', 'passpharse' => null])```
 - SCP     
 ```
-$scpClient = (new ScpClientFactory)->createClient(...);
+$scpClient = (new ScpClientFactory())->createClient(...);
 $scpClient = new ScpClient(...);
 ```
 >You can use both password or public key for credentials
