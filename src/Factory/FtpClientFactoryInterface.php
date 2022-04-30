@@ -7,22 +7,24 @@
  * file that was distributed with this source code.
  *
  * Author Thomas Beauchataud
- * From 27/04/2022
+ * From 30/04/2022
  */
 
 namespace TBCD\FtpClient\Factory;
 
+use TBCD\FtpClient\FtpClientInterface;
+
+/**
+ * @author Thomas Beauchataud
+ * @since 27/04/2022
+ */
 interface FtpClientFactoryInterface
 {
 
     /**
-     * @return array
+     * @param array $clientConfig
+     * @return FtpClientInterface
      */
-    public function getDefaultConfig(): array;
-
-    /**
-     * @return array
-     */
-    public function getClientsConfig(): array;
+    public function createClient(array $clientConfig): FtpClientInterface;
 
 }

@@ -14,6 +14,10 @@ namespace TBCD\FtpClient\Exception;
 
 use Exception;
 
+/**
+ * @author Thomas Beauchataud
+ * @since 27/04/2022
+ */
 class FtpClientException extends Exception
 {
 

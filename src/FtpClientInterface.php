@@ -10,10 +10,14 @@
  * From 27/04/2022
  */
 
-namespace TBCD\FtpClient\Client;
+namespace TBCD\FtpClient;
 
 use TBCD\FtpClient\Exception\FtpClientException;
 
+/**
+ * @author Thomas Beauchataud
+ * @since 27/04/2022
+ */
 interface FtpClientInterface
 {
 
@@ -66,10 +70,11 @@ interface FtpClientInterface
 
     /**
      * @param string $directoryPath
+     * @param bool $excludeDefault
      * @return array
      * @throws FtpClientException
      */
-    public function list(string $directoryPath): array;
+    public function scan(string $directoryPath = '.', bool $excludeDefault = true): array;
 
     /**
      * @return bool
