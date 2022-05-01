@@ -44,7 +44,7 @@ class FtpClientFactory implements FtpClientFactoryInterface
     public function createClient(array $clientConfig): FtpClient
     {
         $clientConfig = $this->optionsResolver->resolve($clientConfig);
-        return new FtpClient($clientConfig['host'], $clientConfig['user'], $clientConfig['password'], $clientConfig['port'], $clientConfig['passive'], $clientConfig['keepAlive']);
+        return new FtpClient($clientConfig['host'], $clientConfig['user'], $clientConfig['credentials'], $clientConfig['port'], $clientConfig['passive'], $clientConfig['keepAlive']);
     }
 
     /**
@@ -58,8 +58,8 @@ class FtpClientFactory implements FtpClientFactoryInterface
             ->setAllowedTypes('host', 'string')
             ->setRequired('user')
             ->setAllowedTypes('user', 'string')
-            ->setRequired('password')
-            ->setAllowedTypes('password', 'string')
+            ->setRequired('credentials')
+            ->setAllowedTypes('credentials', 'string')
             ->setRequired('port')
             ->setAllowedTypes('port', 'integer')
             ->setDefault('port', 21)

@@ -24,7 +24,7 @@ class FtpClient implements FtpClientInterface
     /**
      * @var string
      */
-    private string $password;
+    private string $credentials;
 
     /**
      * @var int
@@ -49,16 +49,16 @@ class FtpClient implements FtpClientInterface
     /**
      * @param string $host
      * @param string $user
-     * @param string $password
+     * @param string $credentials
      * @param int $port
      * @param bool $passive
      * @param bool $keepAlive
      */
-    public function __construct(string $host, string $user, string $password, int $port = 21, bool $passive = true, bool $keepAlive = true)
+    public function __construct(string $host, string $user, string $credentials, int $port = 21, bool $passive = true, bool $keepAlive = true)
     {
         $this->host = $host;
         $this->user = $user;
-        $this->password = $password;
+        $this->credentials = $credentials;
         $this->port = $port;
         $this->passive = $passive;
         $this->keepAlive = $keepAlive;
@@ -198,7 +198,7 @@ class FtpClient implements FtpClientInterface
             if (!$this->connection) {
                 throw new FtpClientException(sprintf("Failed to create a connexion to %s:%s", $this->host, $this->port));
             }
-            if (!ftp_login($this->connection, $this->user, $this->password)) {
+            if (!ftp_login($this->connection, $this->user, $this->credentials)) {
                 throw new FtpClientException(sprintf("Failed to login to %s@%s", $this->user, $this->host));
             }
             if ($this->passive) {

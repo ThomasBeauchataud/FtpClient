@@ -17,11 +17,11 @@ $ftpClient = new FtpClient('localhost', 'root', 'password');
 ```
 $ftpClientFactory = new FtpClientFactory(['host' => 'localhost'];
 
-$config = ['user' => 'root', 'password' => 'password'];
+$config = ['user' => 'root', 'credentials' => 'password'];
 $ftpClient1 = $ftpClientFactory->createClient($config);
 
 // Overwrite the default host
-$config = ['host' => 'www.mydomain.com', 'user' => 'root', 'password' => 'password'];
+$config = ['host' => 'www.mydomain.com', 'user' => 'root', 'credentials' => 'password'];
 $ftpClient2 = $ftpClientFactory->createClient($config);
 ```
 
