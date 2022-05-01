@@ -68,7 +68,7 @@ class FtpClientFactory implements FtpClientFactoryInterface
             ->setDefault('passive', true)
             ->setRequired('keepAlive')
             ->setAllowedTypes('keepAlive', 'boolean')
-            ->setDefault('passive', true);
+            ->setDefault('keepAlive', true);
 
         foreach ($defaultConfig as $key => $value) {
             if ($optionsResolver->isDefined($key)) {
