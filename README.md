@@ -18,11 +18,11 @@ $ftpClient = new FtpClient('localhost', 'root', 'password');
 $ftpClientFactory = new FtpClientFactory(['host' => 'localhost'];
 
 $config = ['user' => 'root', 'password' => 'password'];
-$ftpClient1 = $this->ftpClientFactory->createClient($config);
+$ftpClient1 = $ftpClientFactory->createClient($config);
 
 // Overwrite the default host
 $config = ['host' => 'www.mydomain.com', 'user' => 'root', 'password' => 'password'];
-$ftpClient2 = $this->ftpClientFactory->createClient($config);
+$ftpClient2 = $ftpClientFactory->createClient($config);
 ```
 
 Below are the different clients/factories for the different protocols :
