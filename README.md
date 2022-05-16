@@ -1,7 +1,7 @@
 # FtpClient
 
 This library allows to create ftp clients services to be able to manage multiple ftp connection with a common
-abstraction for all protocols (FTP, SFTP, SCP)
+abstraction for all protocols (FTP, FTPS, SFTP, SCP)
 
 ## Table of content
 - [Client construction](#client-construction)
