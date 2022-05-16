@@ -1,7 +1,7 @@
 {
     "name": "tbcd/ftp-client",
     "type": "library",
-    "description": "Create ftp clients services to be able to manage multiple ftp connection with a common abstraction for all protocols (FTP, SFTP, SCP)",
+    "description": "Create ftp clients services to be able to manage multiple ftp connection with a common abstraction for all protocols (FTP, FTPS, SFTP, SCP)",
     "authors": [
         {
             "name": "Thomas Beauchataud"
@@ -15,14 +15,14 @@
     ],
     "minimum-stability": "stable",
     "prefer-stable": true,
-    "version": "1.0.0",
+    "version": "1.1.0",
     "require": {
-        "php": ">=8.0.2",
+        "php": ">=8.1",
         "ext-ctype": "*",
         "ext-ftp": "*",
         "ext-iconv": "*",
         "ext-ssh2": "*",
-        "symfony/options-resolver": "^6.0"
+        "symfony/options-resolver": "^5.4"
     },
     "autoload": {
         "psr-4": {

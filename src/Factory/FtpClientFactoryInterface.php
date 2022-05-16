@@ -1,13 +1,12 @@
 <?php
 
 /*
- * The file is part of the WoWUltimate project 
- * 
+ * This file is part of the tbcd/ftp-client package.
+ *
+ * (c) Thomas Beauchataud <thomas.beauchataud@yahoo.fr>
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- *
- * Author Thomas Beauchataud
- * From 30/04/2022
  */
 
 namespace TBCD\FtpClient\Factory;
@@ -15,10 +14,6 @@ namespace TBCD\FtpClient\Factory;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use TBCD\FtpClient\FtpClientInterface;
 
-/**
- * @author Thomas Beauchataud
- * @since 27/04/2022
- */
 interface FtpClientFactoryInterface
 {
 

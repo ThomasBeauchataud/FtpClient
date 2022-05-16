@@ -1,59 +1,30 @@
 <?php
 
+/*
+ * This file is part of the tbcd/ftp-client package.
+ *
+ * (c) Thomas Beauchataud <thomas.beauchataud@yahoo.fr>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace TBCD\FtpClient;
 
+use FTP\Connection;
 use TBCD\FtpClient\Exception\FtpClientException;
 
-/**
- * @author Thomas Beauchataud
- * @since 27/04/2022
- */
 class FtpClient implements FtpClientInterface
 {
 
-    /**
-     * @var string
-     */
     private string $host;
-
-    /**
-     * @var string
-     */
     private string $user;
-
-    /**
-     * @var string
-     */
     private string $credentials;
-
-    /**
-     * @var int
-     */
     private int $port;
-
-    /**
-     * @var bool
-     */
     private bool $passive;
-
-    /**
-     * @var bool
-     */
     private bool $keepAlive;
+    private ?Connection $connection = null;
 
-    /**
-     * @var mixed
-     */
-    private mixed $connection = null;
-
-    /**
-     * @param string $host
-     * @param string $user
-     * @param string $credentials
-     * @param int $port
-     * @param bool $passive
-     * @param bool $keepAlive
-     */
     public function __construct(string $host, string $user, string $credentials, int $port = 21, bool $passive = true, bool $keepAlive = true)
     {
         $this->host = $host;
@@ -65,9 +36,6 @@ class FtpClient implements FtpClientInterface
     }
 
 
-    /**
-     * @inheritDoc
-     */
     public function download(string $remoteFilePath, string $localFilePath, int $mode = FTP_ASCII): void
     {
         if (!ftp_get($this->getConnection(), $localFilePath, $remoteFilePath, $mode)) {
@@ -78,9 +46,6 @@ class FtpClient implements FtpClientInterface
         }
     }
 
-    /**
-     * @inheritDoc
-     */
     public function upload(string $localFilePath, string $remoteFilePath, int $mode = FTP_ASCII): void
     {
         if (!ftp_put($this->getConnection(), $remoteFilePath, $localFilePath, $mode)) {
@@ -91,9 +56,6 @@ class FtpClient implements FtpClientInterface
         }
     }
 
-    /**
-     * @inheritDoc
-     */
     public function rename(string $oldFilePath, string $newFilePath): void
     {
         if (!ftp_rename($this->getConnection(), $oldFilePath, $newFilePath)) {
@@ -104,9 +66,6 @@ class FtpClient implements FtpClientInterface
         }
     }
 
-    /**
-     * @inheritDoc
-     */
     public function exists(string $filePath): bool
     {
         $output = ftp_size($this->getConnection(), $filePath) > 0;
@@ -116,9 +75,6 @@ class FtpClient implements FtpClientInterface
         return $output;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function mkdir(string $directoryPath): void
     {
         if (!ftp_mkdir($this->getConnection(), $directoryPath)) {
@@ -129,9 +85,6 @@ class FtpClient implements FtpClientInterface
         }
     }
 
-    /**
-     * @inheritDoc
-     */
     public function delete(string $filePath): void
     {
         if (!ftp_delete($this->getConnection(), $filePath)) {
@@ -142,9 +95,6 @@ class FtpClient implements FtpClientInterface
         }
     }
 
-    /**
-     * @inheritDoc
-     */
     public function scan(string $directoryPath = '.', bool $excludeDefault = true): array
     {
         $list = ftp_nlist($this->getConnection(), $directoryPath);
@@ -162,9 +112,6 @@ class FtpClient implements FtpClientInterface
         return $list;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function isValidConnexion(): bool
     {
         try {
@@ -176,10 +123,7 @@ class FtpClient implements FtpClientInterface
         }
     }
 
-    /**
-     * @return void
-     */
-    protected function closeConnection(): void
+    private function closeConnection(): void
     {
         if ($this->connection) {
             ftp_close($this->connection);
@@ -187,11 +131,7 @@ class FtpClient implements FtpClientInterface
         }
     }
 
-    /**
-     * @return mixed
-     * @throws FtpClientException
-     */
-    protected function getConnection(): mixed
+    private function getConnection(): Connection
     {
         if (!$this->connection) {
             $this->connection = ftp_connect($this->host, $this->port);

@@ -13,9 +13,9 @@ namespace TBCD\FtpClient\Factory;
 
 use Symfony\Component\OptionsResolver\Exception\UndefinedOptionsException;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use TBCD\FtpClient\FtpClient;
+use TBCD\FtpClient\FtpsClient;
 
-class FtpClientFactory implements FtpClientFactoryInterface
+class FtpsClientFactory implements FtpClientFactoryInterface
 {
 
     private OptionsResolver $optionsResolver;
@@ -26,10 +26,10 @@ class FtpClientFactory implements FtpClientFactoryInterface
     }
 
 
-    public function createClient(array $clientConfig): FtpClient
+    public function createClient(array $clientConfig): FtpsClient
     {
         $clientConfig = $this->optionsResolver->resolve($clientConfig);
-        return new FtpClient($clientConfig['host'], $clientConfig['user'], $clientConfig['credentials'], $clientConfig['port'], $clientConfig['passive'], $clientConfig['keepAlive']);
+        return new FtpsClient($clientConfig['host'], $clientConfig['user'], $clientConfig['credentials'], $clientConfig['port'], $clientConfig['passive'], $clientConfig['keepAlive']);
     }
 
     public static function buildOptionsResolver(array $defaultConfig): OptionsResolver

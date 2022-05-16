@@ -1,63 +1,28 @@
 <?php
 
 /*
- * The file is part of the WoWUltimate project 
- * 
+ * This file is part of the tbcd/ftp-client package.
+ *
+ * (c) Thomas Beauchataud <thomas.beauchataud@yahoo.fr>
+ *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
- *
- * Author Thomas Beauchataud
- * From 27/04/2022
  */
 
 namespace TBCD\FtpClient;
 
 use TBCD\FtpClient\Exception\FtpClientException;
 
-/**
- * @author Thomas Beauchataud
- * @since 27/04/2022
- */
 class SftpClient implements FtpClientInterface
 {
 
-    /**
-     * @var string
-     */
     private string $host;
-
-    /**
-     * @var string
-     */
     private string $user;
-
-    /**
-     * @var string|array
-     */
     private string|array $credentials;
-
-    /**
-     * @var int
-     */
     private int $port;
-
-    /**
-     * @var bool
-     */
     private bool $keepAlive;
-
-    /**
-     * @var mixed
-     */
     private mixed $connection = null;
 
-    /**
-     * @param string $host
-     * @param string $user
-     * @param string|array $credentials
-     * @param int $port
-     * @param bool $keepAlive
-     */
     public function __construct(string $host, string $user, string|array $credentials, int $port = 22, bool $keepAlive = true)
     {
         $this->host = $host;
@@ -68,9 +33,6 @@ class SftpClient implements FtpClientInterface
     }
 
 
-    /**
-     * @inheritDoc
-     */
     public function download(string $remoteFilePath, string $localFilePath, int $mode = FTP_ASCII): void
     {
         $sftp = $this->getConnection();
@@ -86,9 +48,6 @@ class SftpClient implements FtpClientInterface
         }
     }
 
-    /**
-     * @inheritDoc
-     */
     public function upload(string $localFilePath, string $remoteFilePath, int $mode = FTP_ASCII): void
     {
         $sftp = $this->getConnection();
@@ -106,9 +65,6 @@ class SftpClient implements FtpClientInterface
         }
     }
 
-    /**
-     * @inheritDoc
-     */
     public function rename(string $oldFilePath, string $newFilePath): void
     {
         if (!ssh2_sftp_rename($this->getConnection(), $oldFilePath, $newFilePath)) {
@@ -119,9 +75,6 @@ class SftpClient implements FtpClientInterface
         }
     }
 
-    /**
-     * @inheritDoc
-     */
     public function exists(string $filePath): bool
     {
         $sftp = $this->getConnection();
@@ -132,9 +85,6 @@ class SftpClient implements FtpClientInterface
         return $output;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function mkdir(string $directoryPath): void
     {
         if (!ssh2_sftp_mkdir($this->getConnection(), $directoryPath)) {
@@ -145,9 +95,6 @@ class SftpClient implements FtpClientInterface
         }
     }
 
-    /**
-     * @inheritDoc
-     */
     public function delete(string $filePath): void
     {
         if (!ssh2_sftp_unlink($this->getConnection(), $filePath)) {
@@ -158,9 +105,6 @@ class SftpClient implements FtpClientInterface
         }
     }
 
-    /**
-     * @inheritDoc
-     */
     public function scan(string $directoryPath = '.', bool $excludeDefault = true): array
     {
         $directoryPath = "/." . (str_starts_with($directoryPath, '/') ? $directoryPath : "/$directoryPath");
@@ -180,9 +124,6 @@ class SftpClient implements FtpClientInterface
         return $list;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function isValidConnexion(): bool
     {
         try {
@@ -194,10 +135,7 @@ class SftpClient implements FtpClientInterface
         }
     }
 
-    /**
-     * @return void
-     */
-    protected function closeConnection(): void
+    private function closeConnection(): void
     {
         if ($this->connection) {
             ssh2_disconnect($this->connection);
@@ -205,11 +143,7 @@ class SftpClient implements FtpClientInterface
         }
     }
 
-    /**
-     * @return mixed
-     * @throws FtpClientException
-     */
-    protected function getConnection(): mixed
+    private function getConnection(): mixed
     {
         if (!$this->connection) {
             $connection = ssh2_connect($this->host, $this->port);
