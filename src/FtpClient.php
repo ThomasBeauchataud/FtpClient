@@ -68,7 +68,7 @@ class FtpClient implements FtpClientInterface
 
     public function exists(string $filePath): bool
     {
-        $output = ftp_size($this->getConnection(), $filePath) > 0;
+        $output = ftp_size($this->getConnection(), $filePath) > 0 || ftp_nlist($this->getConnection(), $filePath) !== false;
         if (!$this->keepAlive) {
             $this->closeConnection();
         }
