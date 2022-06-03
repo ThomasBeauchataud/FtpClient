@@ -103,10 +103,10 @@ class FtpClient implements FtpClientInterface
         $list = explode('/', $directoryPath);
         $path = '';
         foreach ($list as $dir) {
-            if (empty($dir)) {
+            $path .= "$dir/";
+            if (empty($dir) || $this->exists($path)) {
                 continue;
             }
-            $path .= "$dir/";
             if (!ftp_mkdir($this->getConnection(), $path)) {
                 throw new FtpClientException("Failed to create the remote directory $path");
             }
