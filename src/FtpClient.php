@@ -25,6 +25,14 @@ class FtpClient implements FtpClientInterface
     private bool $keepAlive;
     private ?Connection $connection = null;
 
+    /**
+     * @param string $host
+     * @param string $user
+     * @param string $credentials
+     * @param int $port
+     * @param bool $passive
+     * @param bool $keepAlive
+     */
     public function __construct(string $host, string $user, string $credentials, int $port = 21, bool $passive = true, bool $keepAlive = true)
     {
         $this->host = $host;
@@ -36,6 +44,9 @@ class FtpClient implements FtpClientInterface
     }
 
 
+    /**
+     * @inheritDoc
+     */
     public function download(string $remoteFilePath, string $localFilePath, int $mode = FTP_ASCII): void
     {
         if (!ftp_get($this->getConnection(), $localFilePath, $remoteFilePath, $mode)) {
@@ -46,6 +57,9 @@ class FtpClient implements FtpClientInterface
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public function upload(string $localFilePath, string $remoteFilePath, int $mode = FTP_ASCII): void
     {
         if (!ftp_put($this->getConnection(), $remoteFilePath, $localFilePath, $mode)) {
@@ -56,6 +70,9 @@ class FtpClient implements FtpClientInterface
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public function rename(string $oldFilePath, string $newFilePath): void
     {
         if (!ftp_rename($this->getConnection(), $oldFilePath, $newFilePath)) {
@@ -66,6 +83,9 @@ class FtpClient implements FtpClientInterface
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public function exists(string $filePath): bool
     {
         $output = ftp_size($this->getConnection(), $filePath) > 0 || ftp_nlist($this->getConnection(), $filePath) !== false;
@@ -75,16 +95,30 @@ class FtpClient implements FtpClientInterface
         return $output;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function mkdir(string $directoryPath): void
     {
-        if (!ftp_mkdir($this->getConnection(), $directoryPath)) {
-            throw new FtpClientException("Failed to create the remote directory $directoryPath");
+        $list = explode('/', $directoryPath);
+        $path = '';
+        foreach ($list as $dir) {
+            if (empty($dir)) {
+                continue;
+            }
+            $path .= "$dir/";
+            if (!ftp_mkdir($this->getConnection(), $path)) {
+                throw new FtpClientException("Failed to create the remote directory $path");
+            }
         }
         if (!$this->keepAlive) {
             $this->closeConnection();
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public function delete(string $filePath): void
     {
         if (!ftp_delete($this->getConnection(), $filePath)) {
@@ -95,6 +129,9 @@ class FtpClient implements FtpClientInterface
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public function scan(string $directoryPath = '.', bool $excludeDefault = true): array
     {
         $list = ftp_nlist($this->getConnection(), $directoryPath);
@@ -112,6 +149,9 @@ class FtpClient implements FtpClientInterface
         return $list;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function isValidConnexion(): bool
     {
         try {
@@ -123,6 +163,9 @@ class FtpClient implements FtpClientInterface
         }
     }
 
+    /**
+     * @return void
+     */
     private function closeConnection(): void
     {
         if ($this->connection) {
@@ -131,6 +174,10 @@ class FtpClient implements FtpClientInterface
         }
     }
 
+    /**
+     * @return Connection
+     * @throws FtpClientException
+     */
     private function getConnection(): Connection
     {
         if (!$this->connection) {
