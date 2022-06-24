@@ -23,6 +23,13 @@ class SftpClient implements FtpClientInterface
     private bool $keepAlive;
     private mixed $connection = null;
 
+    /**
+     * @param string $host
+     * @param string $user
+     * @param string|array $credentials
+     * @param int $port
+     * @param bool $keepAlive
+     */
     public function __construct(string $host, string $user, string|array $credentials, int $port = 22, bool $keepAlive = true)
     {
         $this->host = $host;
@@ -33,14 +40,20 @@ class SftpClient implements FtpClientInterface
     }
 
 
+    /**
+     * @inheritDoc
+     */
     public function download(string $remoteFilePath, string $localFilePath, int $mode = FTP_ASCII): void
     {
         $sftp = $this->getConnection();
-        $stream = fopen("ssh2.sftp://$sftp$remoteFilePath", 'r');
+        if (!str_starts_with($remoteFilePath, '/')) {
+            $remoteFilePath = "/$remoteFilePath";
+        }
+        $stream = fopen("ssh2.sftp://$sftp/$remoteFilePath", 'r');
         if (!$stream) {
             throw new FtpClientException("Could not open remote file $remoteFilePath");
         }
-        $contents = fread($stream, filesize("ssh2.sftp://$sftp$remoteFilePath"));
+        $contents = stream_get_contents($stream);
         file_put_contents($localFilePath, $contents);
         fclose($stream);
         if (!$this->keepAlive) {
@@ -48,9 +61,15 @@ class SftpClient implements FtpClientInterface
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public function upload(string $localFilePath, string $remoteFilePath, int $mode = FTP_ASCII): void
     {
         $sftp = $this->getConnection();
+        if (!str_starts_with($remoteFilePath, '/')) {
+            $remoteFilePath = "/$remoteFilePath";
+        }
         $stream = fopen("ssh2.sftp://$sftp$remoteFilePath", 'w');
         if (!$stream)
             throw new FtpClientException("Could not open remote file $remoteFilePath");
@@ -65,6 +84,9 @@ class SftpClient implements FtpClientInterface
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public function rename(string $oldFilePath, string $newFilePath): void
     {
         if (!ssh2_sftp_rename($this->getConnection(), $oldFilePath, $newFilePath)) {
@@ -75,26 +97,47 @@ class SftpClient implements FtpClientInterface
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public function exists(string $filePath): bool
     {
         $sftp = $this->getConnection();
-        $output = filesize("ssh2.sftp://$sftp$filePath") > 0;
+        if (!str_starts_with($filePath, '/')) {
+            $filePath = "/$filePath";
+        }
+        $output = file_exists("ssh2.sftp://$sftp$filePath");
         if (!$this->keepAlive) {
             $this->closeConnection();
         }
         return $output;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function mkdir(string $directoryPath): void
     {
-        if (!ssh2_sftp_mkdir($this->getConnection(), $directoryPath)) {
-            throw new FtpClientException();
+        $sftp = $this->getConnection();
+        $list = explode('/', $directoryPath);
+        $path = '';
+        foreach ($list as $dir) {
+            $path .= "$dir/";
+            if (empty($dir) || $this->exists($path)) {
+                continue;
+            }
+            if (!ssh2_sftp_mkdir($sftp, $path)) {
+                throw new FtpClientException("Unable to create the remote directory $path");
+            }
         }
         if (!$this->keepAlive) {
             $this->closeConnection();
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public function delete(string $filePath): void
     {
         if (!ssh2_sftp_unlink($this->getConnection(), $filePath)) {
@@ -105,6 +148,9 @@ class SftpClient implements FtpClientInterface
         }
     }
 
+    /**
+     * @inheritDoc
+     */
     public function scan(string $directoryPath = '.', bool $excludeDefault = true): array
     {
         $directoryPath = "/." . (str_starts_with($directoryPath, '/') ? $directoryPath : "/$directoryPath");
@@ -124,6 +170,9 @@ class SftpClient implements FtpClientInterface
         return $list;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function isValidConnexion(): bool
     {
         try {
@@ -135,6 +184,9 @@ class SftpClient implements FtpClientInterface
         }
     }
 
+    /**
+     * @return void
+     */
     private function closeConnection(): void
     {
         if ($this->connection) {
@@ -143,6 +195,10 @@ class SftpClient implements FtpClientInterface
         }
     }
 
+    /**
+     * @return mixed
+     * @throws FtpClientException
+     */
     private function getConnection(): mixed
     {
         if (!$this->connection) {
